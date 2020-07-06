@@ -162,3 +162,37 @@ if ( ! is_admin() && ! function_exists( 'wc_review_ratings_enabled' ) ) {
 		return wc_reviews_enabled() && 'yes' === get_option( 'woocommerce_enable_review_rating' );
 	}
 }
+
+/**
+ * pagesailor modifications 
+ */
+
+// Remove each style one by one 
+add_filter( 'woocommerce_enqueue_styles', 'jk_dequeue_styles' );
+function jk_dequeue_styles( $enqueue_styles ) {
+	unset( $enqueue_styles['woocommerce-general'] );	// Remove the gloss
+	unset( $enqueue_styles['woocommerce-layout'] );		// Remove the layout
+	unset( $enqueue_styles['woocommerce-smallscreen'] );	// Remove the smallscreen optimisation
+	return $enqueue_styles;
+}
+
+//Remove “Category:”, “Tag:”, “Author:” from the_archive_title
+add_filter( 'get_the_archive_title', function ($title) {
+
+    if ( is_category() ) {
+
+            $title = single_cat_title( '', false );
+
+        } elseif ( is_tag() ) {
+
+            $title = single_tag_title( '', false );
+
+        } elseif ( is_author() ) {
+
+            $title = '<span class="vcard">' . get_the_author() . '</span>' ;
+
+        }
+
+    return $title;
+
+});
